@@ -1,4 +1,5 @@
-from system import *
+from system.BusinessModel import BusinessModel
+from system.DataModel import DataModel
 from datetime import datetime
 
 class ProductBrandsM(DataModel, BusinessModel):
