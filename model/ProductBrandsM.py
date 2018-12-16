@@ -25,6 +25,15 @@ class ProductBrandsM(DataModel, BusinessModel):
             self.name, self.name_ko, self.name_ori, self.created_date_time, self.status
         ])
 
+    def getList(self):
+
+        query = '''
+            SELECT * FROM `product_brands`
+        '''
+
+        return self.postman.getList(query, [
+
+        ])
 
 if __name__ == "__main__":
     test = ProductBrandsM()
