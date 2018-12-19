@@ -54,9 +54,41 @@ class ProductBrandsM(DataModel, BusinessModel):
         return self.postman.getList(query, params)
 
 
-if __name__ == "__main__":
-    test = ProductBrandsM()
-    test.name = '4'
-    test.name_ko = '5'
-    test.name_ori = '6'
-    print(test.create())
+    def getTotal(self):
+
+        query = '''
+            SELECT
+                count(*) cnt
+            FROM
+                `product_brands`
+            WHERE
+        '''
+
+        query += ''' `status`= %s '''
+
+        params = list()
+        params.append(self.status)
+
+        return self.postman.get(query, params)
+
+
+    def get(self):
+
+        if False in [hasattr(self, 'idx')]:
+            return False
+
+        query = '''
+            SELECT
+                *
+            FROM
+                `product_brands`
+            WHERE
+        '''
+        if hasattr(self, 'idx'):            query += '`idx`=%s AND '
+        query += '`status`=%s '
+
+        params = list()
+        if hasattr(self, 'idx'):            params.append(self.idx)
+        params.append(self.status)
+
+        return self.postman.get(query, params)
