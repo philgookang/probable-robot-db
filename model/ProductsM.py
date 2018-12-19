@@ -11,7 +11,7 @@ class ProductsM(DataModel, BusinessModel):
 
     def create(self):
 
-        params = ['mall_idx', 'brand_idx', 'name', 'name_ko', 'second_name', 'description', 'category_1_idx', 'category_2_idx', 'category_3_idx', 'category_4_idx', 'price', 'product_id', 'mp_id']
+        params = ['mall_idx', 'brand_idx', 'name', 'name_ori', 'name_ko', 'second_name', 'description', 'category_1_idx', 'category_2_idx', 'category_3_idx', 'category_4_idx', 'price', 'product_id', 'mp_id', 'ml_exclude_price', 'ml_exclude_lang']
 
         for field in params:
             if not hasattr(self, field):
@@ -19,15 +19,17 @@ class ProductsM(DataModel, BusinessModel):
 
         query = '''
             INSERT INTO `products`
-                ( `mall_idx`, `brand_idx`, `name`, `name_ko`, `second_name`, `description`, `category_1_idx`, `category_2_idx`, `category_3_idx`, `category_4_idx`, `price`, `product_id`, `mp_id`, `created_date_time`, `status` )
+                ( `mall_idx`, `brand_idx`, `name`, `name_ori`, `name_ko`, `second_name`, `description`, `category_1_idx`, `category_2_idx`, `category_3_idx`, `category_4_idx`, `price`, `product_id`, `mp_id`, `ml_exclude_price`, `ml_exclude_lang`, `created_date_time`, `status` )
             VALUES
-                ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )
+                ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s )
         '''
 
         return self.postman.create(query, [
-            self.mall_idx, self.brand_idx, self.name, self.name_ko, self.second_name, self.description,
+            self.mall_idx, self.brand_idx, self.name, self.name_ori, self.name_ko, self.second_name, self.description,
             self.category_1_idx, self.category_2_idx, self.category_3_idx, self.category_4_idx,
-            self.price, self.product_id, self.mp_id, self.created_date_time, self.status
+            self.price, self.product_id, self.mp_id,
+            self.ml_exclude_price, self.ml_exclude_lang,
+            self.created_date_time, self.status
         ])
 
 
@@ -45,14 +47,38 @@ class ProductsM(DataModel, BusinessModel):
             FROM
                 `products`
             WHERE
-                `status`=%s
+        '''
+        if hasattr(self, 'ml_exclude_price'):   query += " `ml_exclude_price`= %s AND "
+        if hasattr(self, 'ml_exclude_lang'):    query += " `ml_exclude_lang`= %s AND "
+        query += '''
+                `status`= %s
             ORDER BY
                 {0} {1}
         '''.format(sort_by, sdirection)
         if not nolimit: query += "LIMIT %s offset %s "
 
         params = list()
+        if hasattr(self, 'ml_exclude_price'):   params.append(self.ml_exclude_price)
+        if hasattr(self, 'ml_exclude_lang'):    params.append(self.ml_exclude_lang)
         params.append(self.status)
         if not nolimit: params.extend((limit, offset))
 
         return self.postman.getList(query, params)
+
+
+    def getTotal(self):
+
+        query = '''
+            SELECT
+                count(*) cnt
+            FROM
+                `products`
+            WHERE
+        '''
+
+        query += ''' `status`= %s '''
+
+        params = list()
+        params.append(self.status)
+
+        return self.postman.get(query, params)
