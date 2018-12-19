@@ -33,6 +33,28 @@ class ProductsM(DataModel, BusinessModel):
         ])
 
 
+    def get(self):
+
+        if False in [hasattr(self, 'idx')]:
+            return False
+
+        query = '''
+            SELECT
+                *
+            FROM
+                `product_images`
+            WHERE
+        '''
+        if hasattr(self, 'idx'):            query += '`idx`=%s AND '
+        query += '`status`=%s '
+
+        params = list()
+        if hasattr(self, 'idx'):            params.append(self.idx)
+        params.append(self.status)
+
+        return self.postman.get(query, params)
+
+
     def getList(self, **kwargs):
 
         sort_by     = kwargs['sort_by']         if 'sort_by'        in kwargs else 'idx'
@@ -50,6 +72,9 @@ class ProductsM(DataModel, BusinessModel):
         '''
         if hasattr(self, 'ml_exclude_price'):   query += " `ml_exclude_price`= %s AND "
         if hasattr(self, 'ml_exclude_lang'):    query += " `ml_exclude_lang`= %s AND "
+        if hasattr(self, 'brand_idx'):          query += " `brand_idx`= %s AND "
+        if hasattr(self, 'search_name'):        query += " `name` LIKE %s AND "
+        if hasattr(self, 'search_name_ori'):    query += " `name_ori` LIKE %s AND "
         query += '''
                 `status`= %s
             ORDER BY
@@ -60,6 +85,9 @@ class ProductsM(DataModel, BusinessModel):
         params = list()
         if hasattr(self, 'ml_exclude_price'):   params.append(self.ml_exclude_price)
         if hasattr(self, 'ml_exclude_lang'):    params.append(self.ml_exclude_lang)
+        if hasattr(self, 'brand_idx'):          params.append(self.brand_idx)
+        if hasattr(self, 'search_name'):        params.append("%" + self.search_name + "%")
+        if hasattr(self, 'search_name_ori'):    params.append("%" + self.search_name_ori + "%")
         params.append(self.status)
         if not nolimit: params.extend((limit, offset))
 
@@ -75,10 +103,19 @@ class ProductsM(DataModel, BusinessModel):
                 `products`
             WHERE
         '''
-
+        if hasattr(self, 'ml_exclude_price'):   query += " `ml_exclude_price`= %s AND "
+        if hasattr(self, 'ml_exclude_lang'):    query += " `ml_exclude_lang`= %s AND "
+        if hasattr(self, 'brand_idx'):          query += " `brand_idx`= %s AND "
+        if hasattr(self, 'search_name'):        query += " `name` LIKE %s AND "
+        if hasattr(self, 'search_name_ori'):    query += " `name_ori` LIKE %s AND "
         query += ''' `status`= %s '''
 
         params = list()
+        if hasattr(self, 'ml_exclude_price'):   params.append(self.ml_exclude_price)
+        if hasattr(self, 'ml_exclude_lang'):    params.append(self.ml_exclude_lang)
+        if hasattr(self, 'brand_idx'):          params.append(self.brand_idx)
+        if hasattr(self, 'search_name'):        params.append("%" + self.search_name + "%")
+        if hasattr(self, 'search_name_ori'):    params.append("%" + self.search_name_ori + "%")
         params.append(self.status)
 
         return self.postman.get(query, params)
