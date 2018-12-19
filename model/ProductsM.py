@@ -42,7 +42,7 @@ class ProductsM(DataModel, BusinessModel):
             SELECT
                 *
             FROM
-                `product_images`
+                `products`
             WHERE
         '''
         if hasattr(self, 'idx'):            query += '`idx`=%s AND '
