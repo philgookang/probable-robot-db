@@ -15,16 +15,35 @@ class ProductBrandsM(DataModel, BusinessModel):
         if False in [hasattr(self, 'name'), hasattr(self, 'name_ko'), hasattr(self, 'name_ori')]:
             return False
 
+        self.product_counter = 0
+
         query = '''
             INSERT INTO `product_brands`
-                ( `name`, `name_ko`, `name_ori`, `created_date_time`, `status` )
+                ( `name`, `name_ko`, `name_ori`, `product_counter`, `created_date_time`, `status` )
             VALUES
-                ( %s, %s, %s, %s, %s )
+                ( %s, %s, %s, %s, %s, %s )
         '''
 
         return self.postman.create(query, [
-            self.name, self.name_ko, self.name_ori, self.created_date_time, self.status
+            self.name, self.name_ko, self.name_ori, self.product_counter, self.created_date_time, self.status
         ])
+
+
+    def increaseCounter(self):
+
+        if False in [hasattr(self, 'idx')]:
+            return False
+
+        query = '''
+            UPDATE
+                `product_brands`
+            SET
+                `product_counter` = `product_counter` + 1
+            WHERE
+                `idx` = %s
+        '''
+
+        return self.postman.create(query, [self.idx])
 
 
     def getList(self, **kwargs):
