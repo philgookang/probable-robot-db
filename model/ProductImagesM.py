@@ -51,3 +51,53 @@ class ProductImagesM(DataModel, BusinessModel):
         params.append(self.status)
 
         return self.postman.get(query, params)
+
+
+    def getList(self, **kwargs):
+
+        sort_by     = kwargs['sort_by']         if 'sort_by'        in kwargs else 'sort_idx'
+        sdirection  = kwargs['sort_direction']  if 'sort_direction' in kwargs else 'desc'
+        limit       = kwargs['limit']           if 'limit'          in kwargs else 20
+        nolimit     = kwargs['nolimit']         if 'nolimit'        in kwargs else False
+        offset      = kwargs['offset']          if 'offset'         in kwargs else 0
+
+        query = '''
+            SELECT
+                *
+            FROM
+                `product_images`
+            WHERE
+        '''
+        if hasattr(self, 'product_idx'): query += " `product_idx`= %s AND "
+        query += '''
+                `status`=%s
+            ORDER BY
+                {0} {1}
+        '''.format(sort_by, sdirection)
+        if not nolimit: query += "LIMIT %s offset %s "
+
+        params = list()
+        if hasattr(self, 'product_idx'): params.append(self.product_idx)
+        params.append(self.status)
+        if not nolimit: params.extend((limit, offset))
+
+        return self.postman.getList(query, params)
+
+
+    def getTotal(self):
+
+        query = '''
+            SELECT
+                count(*) cnt
+            FROM
+                `product_images`
+            WHERE
+        '''
+        if hasattr(self, 'product_idx'): query += " `product_idx`= %s AND "
+        query += ''' `status`= %s '''
+
+        params = list()
+        if hasattr(self, 'product_idx'): params.append(self.product_idx)
+        params.append(self.status)
+
+        return self.postman.get(query, params)
