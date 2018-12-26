@@ -73,6 +73,8 @@ class ProductsM(DataModel, BusinessModel):
         if hasattr(self, 'ml_exclude_price'):   query += " `ml_exclude_price`= %s AND "
         if hasattr(self, 'ml_exclude_lang'):    query += " `ml_exclude_lang`= %s AND "
         if hasattr(self, 'brand_idx'):          query += " `brand_idx`= %s AND "
+        if hasattr(self, 'category_1_idx'):     query += " `category_1_idx`= %s AND "
+        if hasattr(self, 'category_2_idx'):     query += " `category_2_idx`= %s AND "
         if hasattr(self, 'search_name'):        query += " `name` LIKE %s AND "
         if hasattr(self, 'search_name_ori'):    query += " `name_ori` LIKE %s AND "
         query += '''
@@ -86,6 +88,8 @@ class ProductsM(DataModel, BusinessModel):
         if hasattr(self, 'ml_exclude_price'):   params.append(self.ml_exclude_price)
         if hasattr(self, 'ml_exclude_lang'):    params.append(self.ml_exclude_lang)
         if hasattr(self, 'brand_idx'):          params.append(self.brand_idx)
+        if hasattr(self, 'category_1_idx'):     params.append(self.category_1_idx)
+        if hasattr(self, 'category_2_idx'):     params.append(self.category_2_idx)
         if hasattr(self, 'search_name'):        params.append("%" + self.search_name + "%")
         if hasattr(self, 'search_name_ori'):    params.append("%" + self.search_name_ori + "%")
         params.append(self.status)
@@ -106,6 +110,8 @@ class ProductsM(DataModel, BusinessModel):
         if hasattr(self, 'ml_exclude_price'):   query += " `ml_exclude_price`= %s AND "
         if hasattr(self, 'ml_exclude_lang'):    query += " `ml_exclude_lang`= %s AND "
         if hasattr(self, 'brand_idx'):          query += " `brand_idx`= %s AND "
+        if hasattr(self, 'category_1_idx'):     query += " `category_1_idx`= %s AND "
+        if hasattr(self, 'category_2_idx'):     query += " `category_2_idx`= %s AND "
         if hasattr(self, 'search_name'):        query += " `name` LIKE %s AND "
         if hasattr(self, 'search_name_ori'):    query += " `name_ori` LIKE %s AND "
         query += ''' `status`= %s '''
@@ -114,6 +120,8 @@ class ProductsM(DataModel, BusinessModel):
         if hasattr(self, 'ml_exclude_price'):   params.append(self.ml_exclude_price)
         if hasattr(self, 'ml_exclude_lang'):    params.append(self.ml_exclude_lang)
         if hasattr(self, 'brand_idx'):          params.append(self.brand_idx)
+        if hasattr(self, 'category_1_idx'):     params.append(self.category_1_idx)
+        if hasattr(self, 'category_2_idx'):     params.append(self.category_2_idx)
         if hasattr(self, 'search_name'):        params.append("%" + self.search_name + "%")
         if hasattr(self, 'search_name_ori'):    params.append("%" + self.search_name_ori + "%")
         params.append(self.status)
