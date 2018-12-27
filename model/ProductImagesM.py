@@ -12,18 +12,18 @@ class ProductImagesM(DataModel, BusinessModel):
 
     def create(self):
 
-        if False in [hasattr(self, 'product_idx'), hasattr(self, 'filename'), hasattr(self, 'sort_idx')]:
+        if False in [hasattr(self, 'product_idx'), hasattr(self, 'filename'), hasattr(self, 'sort_idx'), hasattr(self, 'width_pixel'), hasattr(self, 'height_pixel')]:
             return False
 
         query = '''
             INSERT INTO `product_images`
-                ( `sort_idx`, `product_idx`, `filename`, `created_date_time`, `status` )
+                ( `sort_idx`, `product_idx`, `filename`, `width_pixel`, `height_pixel`, `created_date_time`, `status` )
             VALUES
-                ( %s, %s, %s, %s, %s )
+                ( %s, %s, %s, %s, %s, %s, %s )
         '''
 
         return self.postman.create(query, [
-            self.sort_idx, self.product_idx, self.filename, self.created_date_time, self.status
+            self.sort_idx, self.product_idx, self.filename, self.width_pixel, self.height_pixel, self.created_date_time, self.status
         ])
 
 
