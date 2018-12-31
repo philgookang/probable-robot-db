@@ -84,6 +84,43 @@ class ProductImagesM(DataModel, BusinessModel):
         return self.postman.getList(query, params)
 
 
+    def getMLList(self, **kwargs):
+
+        sort_by     = kwargs['sort_by']         if 'sort_by'        in kwargs else 'sort_idx'
+        sdirection  = kwargs['sort_direction']  if 'sort_direction' in kwargs else 'desc'
+        limit       = kwargs['limit']           if 'limit'          in kwargs else 20
+        nolimit     = kwargs['nolimit']         if 'nolimit'        in kwargs else False
+        offset      = kwargs['offset']          if 'offset'         in kwargs else 0
+
+        query = '''
+            SELECT
+                `pi`.`idx`, `pi`.`product_idx`, `pi`.`filename`, `p`.`name`, `pc`.`name` as category_name
+            FROM
+                `product_images` pi,
+                `products` p,
+                `product_categories` pc
+            WHERE
+                `pi`.`product_idx` = `p`.`idx` AND
+                `p`.`category_1_idx` = `pc`.`idx` AND
+        '''
+        if hasattr(self, 'width_pixel'):  query += " `width_pixel`= %s AND "
+        if hasattr(self, 'height_pixel'): query += " `height_pixel`= %s AND "
+        query += '''
+                `pi`.`status`=%s
+            ORDER BY
+                {0} {1}
+        '''.format(sort_by, sdirection)
+        if not nolimit: query += "LIMIT %s offset %s "
+
+        params = list()
+        if hasattr(self, 'width_pixel'):  params.append(self.width_pixel)
+        if hasattr(self, 'height_pixel'): params.append(self.height_pixel)
+        params.append(self.status)
+        if not nolimit: params.extend((limit, offset))
+
+        return self.postman.getList(query, params)
+
+
     def getTotal(self):
 
         query = '''
